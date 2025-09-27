@@ -28,7 +28,11 @@ export const validateExpenseForm = (formData) => {
     expenseFormSchema.parse(formData);
     return true;
   } catch (error) {
-    if (error instanceof z.ZodError) {
+    if (
+      error instanceof z.ZodError &&
+      error.errors &&
+      error.errors.length > 0
+    ) {
       const firstError = error.errors[0];
       toast.error(firstError.message);
     } else {

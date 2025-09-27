@@ -14,7 +14,7 @@ const links = [
   {
     id: 1,
     text: "Home",
-    path: "/",
+    path: "index",
     icon: <MdDashboard />,
   },
   {

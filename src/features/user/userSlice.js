@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import toast from "react-hot-toast";
 import {
   registerEmployeeThunk,
   registerManagerThunk,
@@ -77,15 +78,17 @@ const userSlice = createSlice({
       .addCase(registerEmployee.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(registerEmployee.fulfilled, (state, action) => {
+      .addCase(registerEmployee.fulfilled, (state, { payload }) => {
         state.isLoading = false;
-        state.user = action.payload.user;
+        state.user = payload.user;
         addUserToSessionStorage(state.user);
         state.error = null;
+        toast.success(`Welcome ${state.user.name}! Registration successful.`);
       })
-      .addCase(registerEmployee.rejected, (state, action) => {
+      .addCase(registerEmployee.rejected, (state, { payload }) => {
         state.isLoading = false;
-        state.error = action.payload;
+        state.error = payload.message;
+        toast.error(payload.message);
       });
 
     //registerManager
@@ -93,15 +96,17 @@ const userSlice = createSlice({
       .addCase(registerManager.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(registerManager.fulfilled, (state, action) => {
+      .addCase(registerManager.fulfilled, (state, { payload }) => {
         state.isLoading = false;
-        state.user = action.payload.user;
+        state.user = payload.user;
         addUserToSessionStorage(state.user);
         state.error = null;
+        toast.success(`Welcome ${state.user.name}! Registration successful.`);
       })
-      .addCase(registerManager.rejected, (state, action) => {
+      .addCase(registerManager.rejected, (state, { payload }) => {
         state.isLoading = false;
-        state.error = action.payload;
+        state.error = payload.message;
+        toast.error(payload.message);
       });
 
     //activateAccount
@@ -109,14 +114,16 @@ const userSlice = createSlice({
       .addCase(activateAccount.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(activateAccount.fulfilled, (state, action) => {
+      .addCase(activateAccount.fulfilled, (state, { payload }) => {
         state.isLoading = false;
-        state.user = action.payload.user;
+        state.user = payload.user;
         state.error = null;
+        toast.success(`Account activated successfully.`);
       })
-      .addCase(activateAccount.rejected, (state, action) => {
+      .addCase(activateAccount.rejected, (state, { payload }) => {
         state.isLoading = false;
-        state.error = action.payload;
+        state.error = payload.message;
+        toast.error(payload.message);
       });
 
     //login
@@ -124,16 +131,17 @@ const userSlice = createSlice({
       .addCase(login.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(login.fulfilled, (state, action) => {
-        console.log(action.payload);
+      .addCase(login.fulfilled, (state, { payload }) => {
         state.isLoading = false;
-        state.user = action.payload.user;
+        state.user = payload.user;
         addUserToLocalStorage(state.user);
         state.error = null;
+        toast.success(`Welcome back ${state.user.name}!`);
       })
-      .addCase(login.rejected, (state, action) => {
+      .addCase(login.rejected, (state, { payload }) => {
         state.isLoading = false;
-        state.error = action.payload;
+        state.error = payload.message;
+        toast.error(payload.message);
       });
   },
 });

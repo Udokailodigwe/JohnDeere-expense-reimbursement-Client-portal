@@ -1,5 +1,5 @@
-import React from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useParams, useNavigate } from "react-router-dom";
 import {
   MdAttachMoney,
   MdDescription,
@@ -9,15 +9,24 @@ import {
 } from "react-icons/md";
 import {
   createExpense,
+  editExpense,
   handleInputValue,
+  clearFormData,
 } from "../../features/expense/expenseSlice";
 import { validateExpenseForm } from "../../utils/validation";
-import { categories } from "../../utils/data";
+import { categories } from "../../utils/helpFunc";
+import { useEditExpenseForm } from "../../hooks/useEditExpenseForm";
 
 const AddExpenses = () => {
-  const { isLoading, amount, description, category, expenseDate, notes } =
-    useSelector((state) => state.expense);
+  const { expenseId } = useParams();
+  const {
+    isLoading,
+    formData: { amount, description, category, expenseDate, notes },
+    expenses,
+  } = useSelector((state) => state.expense);
+  const { isEditMode, expenseData } = useEditExpenseForm(expenseId, expenses);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -26,9 +35,27 @@ const AddExpenses = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const formData = { amount, description, category, expenseDate, notes };
+    const formData = {
+      amount: amount.toString(),
+      description,
+      category,
+      expenseDate: expenseDate.split("T")[0],
+      notes,
+    };
     if (validateExpenseForm(formData)) {
-      dispatch(createExpense(formData));
+      if (isEditMode && expenseData) {
+        dispatch(
+          editExpense({
+            id: expenseId,
+            ...formData,
+            amount: parseFloat(formData.amount),
+          })
+        );
+        dispatch(clearFormData());
+        navigate("/my-expenses");
+      } else {
+        dispatch(createExpense(formData));
+      }
     }
   };
 
@@ -37,9 +64,13 @@ const AddExpenses = () => {
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-2">
-          Add New Expense
+          {isEditMode ? "Edit Expense" : "Add New Expense"}
         </h1>
-        <p className="text-gray-600">Submit your expense for reimbursement</p>
+        <p className="text-gray-600">
+          {isEditMode
+            ? "Update your expense information"
+            : "Submit your expense for reimbursement"}
+        </p>
       </div>
 
       {/* Form */}
@@ -136,7 +167,7 @@ const AddExpenses = () => {
             <input
               type="date"
               name="expenseDate"
-              value={expenseDate}
+              value={expenseDate.split("T")[0]}
               onChange={handleInputChange}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200"
             />
@@ -170,15 +201,31 @@ const AddExpenses = () => {
               <button
                 type="button"
                 className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-all duration-200 font-medium"
+                onClick={() => navigate("/my-expenses")}
               >
                 Cancel
               </button>
+              {!isEditMode && (
+                <button
+                  type="button"
+                  className="px-6 py-3 border border-orange-300 text-orange-700 rounded-lg hover:bg-orange-50 transition-all duration-200 font-medium"
+                  onClick={() => dispatch(clearFormData())}
+                >
+                  Clear Form
+                </button>
+              )}
               <button
                 type="submit"
                 disabled={isLoading}
                 className="px-8 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-lg hover:from-green-700 hover:to-green-800 transition-all duration-200 font-medium shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {isLoading ? "Submitting..." : "Submit Expense"}
+                {isLoading
+                  ? isEditMode
+                    ? "Saving..."
+                    : "Submitting..."
+                  : isEditMode
+                  ? "Save Changes"
+                  : "Submit Expense"}
               </button>
             </div>
           </div>
