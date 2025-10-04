@@ -1,7 +1,9 @@
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../features/user/userSlice";
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import Search from "./Search";
+import useOutsideClick from "../hooks/useOutsideClick";
 
 const Navbar = () => {
   const { user } = useSelector((state) => state.user);
@@ -9,32 +11,28 @@ const Navbar = () => {
   const navigate = useNavigate();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
+  const dropdownRef = useOutsideClick(isDropdownOpen, () =>
+    setIsDropdownOpen(false)
+  );
+
   const handleLogout = () => {
     dispatch(logout());
     navigate("/activate-account?form=login");
   };
 
-  useEffect(() => {
-    if (!isDropdownOpen) return;
-    const closeOnOutsideClick = (e) =>
-      !e.target.closest(".dropdown") && setIsDropdownOpen(false);
-    document.addEventListener("click", closeOnOutsideClick);
-    return () => document.removeEventListener("click", closeOnOutsideClick);
-  }, [isDropdownOpen]);
-
   return (
-    <nav className="bg-white shadow-sm border-b border-gray-200 px-4 sm:px-6 py-3 sm:py-4">
+    <nav className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 px-4 sm:px-6 py-3 sm:py-4">
       <div className="flex items-center justify-between">
         <div className="w-8 h-8 lg:hidden"></div>
 
         <div className="flex-1 flex justify-center lg:justify-start">
-          <h1 className="text-lg sm:text-xl lg:text-2xl font-semibold text-gray-800">
+          <h1 className="text-lg sm:text-xl lg:text-2xl font-semibold text-gray-800 dark:text-white">
             DASHBOARD
           </h1>
         </div>
 
         <div className="flex items-center space-x-2 sm:space-x-3 lg:space-x-4">
-          <button className="relative p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-colors">
+          <button className="relative p-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors">
             <svg
               className="w-5 h-5 sm:w-6 sm:h-6"
               fill="none"
@@ -60,52 +58,31 @@ const Navbar = () => {
                 d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
               />
             </svg>
-            <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
           </button>
 
-          {/* Search - Hidden on very small screens */}
-          <div className="hidden sm:block relative">
-            <input
-              type="text"
-              placeholder="Search..."
-              className="w-32 sm:w-48 lg:w-64 px-3 sm:px-4 py-2 pl-8 sm:pl-10 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
-            <svg
-              className="absolute left-2 sm:left-3 top-2.5 w-4 h-4 text-gray-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
-            </svg>
-          </div>
+          <Search />
 
-          {/* User Profile Dropdown */}
-          <div className="relative dropdown">
+          <div className="relative dropdown" ref={dropdownRef}>
             <button
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              className="flex items-center space-x-2 sm:space-x-3 p-1.5 sm:p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              className="flex items-center space-x-2 sm:space-x-3 p-1.5 sm:p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
             >
-              <div className="w-7 h-7 sm:w-8 sm:h-8 bg-blue-500 rounded-full flex items-center justify-center">
+              <div className="w-7 h-7 sm:w-8 sm:h-8 bg-blue-500 rounded-full flex items-center justify-center relative">
                 <span className="text-white text-xs sm:text-sm font-medium">
                   {user?.name?.charAt(0).toUpperCase()}
                 </span>
+                <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-400 border-2 border-white rounded-full"></span>
               </div>
               <div className="text-left hidden sm:block">
-                <p className="text-xs sm:text-sm font-medium text-gray-700">
+                <p className="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-200">
                   {user?.name}
                 </p>
-                <p className="text-xs text-gray-500">
+                <p className="text-xs text-gray-500 dark:text-gray-400">
                   {user?.role?.charAt(0).toUpperCase() + user.role.slice(1)}
                 </p>
               </div>
               <svg
-                className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400"
+                className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400 dark:text-gray-500"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -120,18 +97,18 @@ const Navbar = () => {
             </button>
 
             {isDropdownOpen && (
-              <div className="absolute right-0 mt-2 w-40 sm:w-48 bg-white rounded-md shadow-lg border border-gray-200 py-1 z-50">
+              <div className="absolute right-0 mt-2 w-40 sm:w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 py-1 z-50">
                 <a
                   href="/dashboard/profile"
                   onClick={() => setIsDropdownOpen(false)}
-                  className="block px-4 py-2 text-xs sm:text-sm text-gray-700 hover:bg-gray-100"
+                  className="block px-4 py-2 text-xs sm:text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
                 >
                   Profile
                 </a>
                 <a
-                  href="/dashboard/settings"
+                  href="/settings"
                   onClick={() => setIsDropdownOpen(false)}
-                  className="block px-4 py-2 text-xs sm:text-sm text-gray-700 hover:bg-gray-100"
+                  className="block px-4 py-2 text-xs sm:text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
                 >
                   Settings
                 </a>
@@ -141,7 +118,7 @@ const Navbar = () => {
                     setIsDropdownOpen(false);
                     handleLogout();
                   }}
-                  className="block w-full text-left px-4 py-2 text-xs sm:text-sm text-gray-700 hover:bg-gray-100"
+                  className="block w-full text-left px-4 py-2 text-xs sm:text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
                 >
                   Sign out
                 </button>

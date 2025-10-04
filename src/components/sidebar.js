@@ -25,7 +25,7 @@ const Sidebar = () => {
 
       {/* Sidebar */}
       <div
-        className={`bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-white w-64 min-h-screen shadow-2xl border-r border-slate-700 flex flex-col transition-transform duration-300 ease-in-out ${
+        className={`bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-white w-72 min-h-screen shadow-2xl border-r border-slate-700 flex flex-col transition-transform duration-300 ease-in-out ${
           isOpen ? "translate-x-0" : "lg:translate-x-0 -translate-x-full"
         } ${"lg:static fixed top-0 left-0 z-50"}`}
       >

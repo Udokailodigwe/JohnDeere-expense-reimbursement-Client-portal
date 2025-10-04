@@ -36,7 +36,7 @@ const ActivateAccount = () => {
 
     if (user && !isLoading && !values.isRegistered && formParam === "login") {
       setTimeout(() => {
-        navigate("/");
+        navigate("/index");
       }, 1000);
     }
   }, [searchParams, user, isLoading, values.isRegistered, navigate]);

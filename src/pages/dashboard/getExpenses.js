@@ -1,7 +1,13 @@
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { getExpenses } from "../../features/expense/expenseSlice";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import {
+  getExpenses,
+  deleteExpense,
+  handleSearchChange,
+} from "../../features/expense/expenseSlice";
+import ActiveStatus from "../../components/activeStatus";
+import Pagination from "../../components/Pagination";
 import {
   formatDate,
   formatCurrency,
@@ -14,21 +20,43 @@ import {
   MdNote,
   MdEdit,
   MdDelete,
-  MdTrendingUp,
-  MdTrendingDown,
+  MdPending,
+  MdCheckCircle,
   MdMoreVert,
+  MdCancel,
 } from "react-icons/md";
 
 const GetExpenses = () => {
-  const { expenses, totalExpenses, isLoading } = useSelector(
+  const { expenses, totalExpenses, isLoading, searchParams } = useSelector(
     (state) => state.expense
   );
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [urlSearchParams] = useSearchParams();
 
+  // Read URL parameters on component mount and sync with Redux state
   useEffect(() => {
-    dispatch(getExpenses());
-  }, [dispatch]);
+    const urlParams = Object.fromEntries(urlSearchParams.entries());
+
+    // If there are URL parameters, update Redux state with them
+    if (Object.keys(urlParams).length > 0) {
+      Object.entries(urlParams).forEach(([key, value]) => {
+        if (key === "page" || key === "limit") {
+          dispatch(
+            handleSearchChange({ name: key, value: parseInt(value, 10) })
+          );
+        } else {
+          dispatch(handleSearchChange({ name: key, value }));
+        }
+      });
+
+      // Fetch expenses with URL parameters
+      dispatch(getExpenses(urlParams));
+    } else {
+      // No URL parameters, fetch with default parameters
+      dispatch(getExpenses());
+    }
+  }, [dispatch, urlSearchParams]);
 
   const handleEditClick = (expense) => {
     navigate(`/edit-expense/${expense._id}`);
@@ -62,49 +90,84 @@ const GetExpenses = () => {
         </div>
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div className="bg-gradient-to-r from-green-500 to-green-600 rounded-xl p-6 text-white">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-green-100 text-sm">Total Amount</p>
-              <p className="text-2xl font-bold">
+      {/* Active Filters */}
+      <ActiveStatus searchParams={searchParams} />
+      {/* Statistics Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        {/* Total Amount Card - White */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+          <div className="flex items-center justify-center">
+            <div className="text-center">
+              <div className="p-2 bg-blue-100 rounded-lg mx-auto mb-2 w-fit">
+                <MdAttachMoney className="text-blue-600 text-lg" />
+              </div>
+              <p className="text-sm font-medium text-gray-600 mb-1">
+                Total Amount
+              </p>
+              <p className="text-xl font-bold text-gray-900">
                 {formatCurrency(
                   expenses.reduce((sum, expense) => sum + expense.amount, 0)
                 )}
               </p>
             </div>
-            <MdTrendingUp className="text-3xl text-green-200" />
           </div>
         </div>
 
-        <div className="bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl p-6 text-white">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-blue-100 text-sm">Pending</p>
-              <p className="text-2xl font-bold">
+        {/* Pending Card - Yellow */}
+        <div className="bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-lg p-4 text-white">
+          <div className="flex items-center justify-center">
+            <div className="text-center">
+              <div className="p-2 bg-yellow-400 rounded-lg mx-auto mb-2 w-fit">
+                <MdPending className="text-white text-lg" />
+              </div>
+              <p className="text-yellow-100 text-sm font-medium mb-1">
+                Pending
+              </p>
+              <p className="text-xl font-bold">
                 {
                   expenses.filter((expense) => expense.status === "pending")
                     .length
                 }
               </p>
             </div>
-            <MdTrendingDown className="text-3xl text-blue-200" />
           </div>
         </div>
 
-        <div className="bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl p-6 text-white">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-purple-100 text-sm">Approved</p>
-              <p className="text-2xl font-bold">
+        {/* Approved Card - Green */}
+        <div className="bg-gradient-to-r from-green-500 to-green-600 rounded-lg p-4 text-white">
+          <div className="flex items-center justify-center">
+            <div className="text-center">
+              <div className="p-2 bg-green-400 rounded-lg mx-auto mb-2 w-fit">
+                <MdCheckCircle className="text-white text-lg" />
+              </div>
+              <p className="text-green-100 text-sm font-medium mb-1">
+                Approved
+              </p>
+              <p className="text-xl font-bold">
                 {
                   expenses.filter((expense) => expense.status === "approved")
                     .length
                 }
               </p>
             </div>
-            <MdTrendingUp className="text-3xl text-purple-200" />
+          </div>
+        </div>
+
+        {/* Rejected Card - Red */}
+        <div className="bg-gradient-to-r from-red-500 to-red-600 rounded-lg p-4 text-white">
+          <div className="flex items-center justify-center">
+            <div className="text-center">
+              <div className="p-2 bg-red-400 rounded-lg mx-auto mb-2 w-fit">
+                <MdCancel className="text-white text-lg" />
+              </div>
+              <p className="text-red-100 text-sm font-medium mb-1">Rejected</p>
+              <p className="text-xl font-bold">
+                {
+                  expenses.filter((expense) => expense.status === "rejected")
+                    .length
+                }
+              </p>
+            </div>
           </div>
         </div>
       </div>
@@ -223,7 +286,10 @@ const GetExpenses = () => {
                     >
                       <MdEdit className="text-lg" />
                     </button>
-                    <button className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+                    <button
+                      className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                      onClick={() => dispatch(deleteExpense(expense._id))}
+                    >
                       <MdDelete className="text-lg" />
                     </button>
                   </div>
@@ -236,6 +302,11 @@ const GetExpenses = () => {
           ))}
         </div>
       )}
+
+      {/* Pagination */}
+      <div className="mt-8">
+        <Pagination />
+      </div>
     </div>
   );
 };

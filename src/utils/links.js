@@ -4,11 +4,12 @@ import {
   MdAddCircle,
   MdCheckCircle,
   MdPendingActions,
-  MdBarChart,
   MdPerson,
   MdSettings,
   MdLogout,
 } from "react-icons/md";
+
+// create more paths for admin seprate business logics
 
 const links = [
   {
@@ -16,54 +17,64 @@ const links = [
     text: "Home",
     path: "index",
     icon: <MdDashboard />,
+    role: ["employee", "manager"],
   },
   {
     id: 2,
     text: "My Expenses",
     path: "my-expenses",
     icon: <MdReceipt />,
+    role: ["employee", "manager"],
   },
   {
     id: 3,
-    text: "Add Expense",
+    text: "Submit New Expense",
     path: "add-expense",
     icon: <MdAddCircle />,
+    role: ["employee", "manager"],
   },
   {
     id: 4,
-    text: "Approvals",
-    path: "approvals",
-    icon: <MdCheckCircle />,
+    text: "Employees Pending Expenses",
+    path: "pending-expenses",
+    icon: <MdPendingActions />,
+    role: ["manager"],
   },
   {
     id: 5,
-    text: "Pending",
-    path: "pending",
-    icon: <MdPendingActions />,
+    text: "Employees Resolved Expenses",
+    path: "employees-resolved-expenses",
+    icon: <MdCheckCircle />,
+    role: ["manager"],
   },
   {
     id: 6,
-    text: "Reports",
-    path: "reports",
-    icon: <MdBarChart />,
+    text: "Resolved Expenses",
+    path: "resolved-expenses",
+    icon: <MdCheckCircle />,
+    role: ["employee", "manager"],
   },
+
   {
     id: 7,
     text: "Profile",
     path: "profile",
     icon: <MdPerson />,
+    role: ["employee", "manager"],
   },
   {
     id: 8,
     text: "Settings",
     path: "settings",
     icon: <MdSettings />,
+    role: ["employee", "manager"],
   },
   {
     id: 9,
     text: "Logout",
     path: "activate-account?form=login",
     icon: <MdLogout />,
+    role: ["employee", "manager"],
   },
 ];
 

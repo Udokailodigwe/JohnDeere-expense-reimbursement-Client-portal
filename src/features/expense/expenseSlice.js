@@ -4,6 +4,8 @@ import {
   createExpenseThunk,
   getExpensesThunk,
   editExpenseThunk,
+  deleteExpenseThunk,
+  getAllEmployeeExpensesThunk,
 } from "./expenseThunk";
 
 const initialState = {
@@ -17,7 +19,18 @@ const initialState = {
   isLoading: false,
   error: null,
   expenses: [],
+  allEmployeeExpenses: [],
   totalExpenses: 0,
+  searchParams: {
+    search: "",
+    status: "",
+    category: "",
+    startDate: "",
+    endDate: "",
+    page: 1,
+    limit: 10,
+  },
+  pagination: null,
 };
 
 // Async thunks
@@ -30,8 +43,11 @@ export const createExpense = createAsyncThunk(
 
 export const getExpenses = createAsyncThunk(
   "expense/getExpenses",
-  async (thunkAPI) => {
-    return await getExpensesThunk("/expenses", thunkAPI);
+  async (queryParams, thunkAPI) => {
+    return await getExpensesThunk("/expenses", {
+      ...thunkAPI,
+      arg: queryParams,
+    });
   }
 );
 
@@ -43,13 +59,26 @@ export const editExpense = createAsyncThunk(
   }
 );
 
+export const deleteExpense = createAsyncThunk(
+  "expense/deleteExpense",
+  async (id, thunkAPI) => {
+    return await deleteExpenseThunk(`/expenses/${id}`, thunkAPI);
+  }
+);
+
+export const getAllEmployeeExpenses = createAsyncThunk(
+  "expense/getAllEmployeeExpenses",
+  async (thunkAPI) => {
+    return await getAllEmployeeExpensesThunk("/expenses/all", thunkAPI);
+  }
+);
+
 const expenseSlice = createSlice({
   name: "expense",
   initialState,
 
   reducers: {
-    handleInputValue: (state, action) => {
-      const { name, value } = action.payload;
+    handleInputValue: (state, { payload: { name, value } }) => {
       state.formData[name] = value;
     },
 
@@ -59,6 +88,21 @@ const expenseSlice = createSlice({
 
     setFormValues: (state, action) => {
       state.formData = { ...state.formData, ...action.payload };
+    },
+
+    handleSearchChange: (state, { payload: { name, value } }) => {
+      state.searchParams[name] = value;
+    },
+
+    clearSearchParams: (state) => {
+      state.searchParams = {
+        status: "",
+        category: "",
+        startDate: "",
+        endDate: "",
+        page: 1,
+        limit: 10,
+      };
     },
   },
 
@@ -88,6 +132,7 @@ const expenseSlice = createSlice({
         state.isLoading = false;
         state.expenses = payload.expenses;
         state.totalExpenses = payload.totalExpenses;
+        state.pagination = payload.pagination;
         state.error = null;
       })
       .addCase(getExpenses.rejected, (state, { payload }) => {
@@ -111,10 +156,53 @@ const expenseSlice = createSlice({
         console.log(state.error);
         toast.error(payload);
       });
+
+    // Delete expense
+    builder
+      .addCase(deleteExpense.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(deleteExpense.fulfilled, (state, { payload }) => {
+        state.isLoading = false;
+        state.error = null;
+        // soft delete the expense
+        state.expenses = state.expenses.filter(
+          (expense) => expense._id !== payload.expenseId
+        );
+        state.totalExpenses = state.expenses.length;
+        toast.success("Expense deleted successfully");
+      })
+      .addCase(deleteExpense.rejected, (state, { payload }) => {
+        state.isLoading = false;
+        state.error = payload;
+        toast.error(payload);
+      });
+
+    // Get all employee expenses
+    builder
+      .addCase(getAllEmployeeExpenses.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getAllEmployeeExpenses.fulfilled, (state, { payload }) => {
+        state.isLoading = false;
+        state.allEmployeeExpenses = payload.expenses;
+        state.pagination = payload.pagination;
+        state.error = null;
+      })
+      .addCase(getAllEmployeeExpenses.rejected, (state, { payload }) => {
+        state.isLoading = false;
+        state.error = payload;
+        toast.error(payload);
+      });
   },
 });
 
-export const { handleInputValue, clearFormData, setFormValues } =
-  expenseSlice.actions;
+export const {
+  handleInputValue,
+  clearFormData,
+  setFormValues,
+  handleSearchChange,
+  clearSearchParams,
+} = expenseSlice.actions;
 
 export default expenseSlice.reducer;

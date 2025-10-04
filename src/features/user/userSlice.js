@@ -140,8 +140,8 @@ const userSlice = createSlice({
       })
       .addCase(login.rejected, (state, { payload }) => {
         state.isLoading = false;
-        state.error = payload.message;
-        toast.error(payload.message);
+        state.error = payload;
+        toast.error(payload);
       });
   },
 });
