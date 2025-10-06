@@ -4,30 +4,44 @@ A modern, enterprise-grade React application for expense management with robust 
 
 ## 🖼️ Application Screenshots
 
+<div align="center">
+
+### Manager Dashboard
+
 <p align="center">
-  <img src="src/assets/images/Screenshot manager home page.jpg" alt="Manager Dashboard" width="600" />
+  <img src="./src/assets/images/Screenshot manager home page.jpg" alt="Manager Dashboard" width="600" />
   <br><em>Manager Dashboard - Overview with expense statistics and charts</em>
 </p>
 
+### Expense Approval Interface
+
 <p align="center">
-  <img src="src/assets/images/Screenshot manager approval page.jpg" alt="Expense Approvals" width="600" />
+  <img src="./src/assets/images/Screenshot manager approval page.jpg" alt="Expense Approvals" width="600" />
   <br><em>Expense Approval Interface - Review and approve/reject employee expenses</em>
 </p>
 
+### Employee Dashboard
+
 <p align="center">
-  <img src="src/assets/images/screenshot employee.jpg" alt="Employee View" width="600" />
+  <img src="./src/assets/images/screenshot employee.jpg" alt="Employee View" width="600" />
   <br><em>Employee Dashboard - Submit and track personal expenses</em>
 </p>
 
+### Advanced Filtering & Pagination
+
 <p align="center">
-  <img src="src/assets/images/Screenshot manager home page with pagination and filter view.jpg" alt="Advanced Filtering" width="600" />
+  <img src="./src/assets/images/Screenshot manager home page with pagination and filter view.jpg" alt="Advanced Filtering" width="600" />
   <br><em>Advanced Filtering & Pagination - Search and filter expenses with server-side pagination</em>
 </p>
 
+### Resolved Expenses
+
 <p align="center">
-  <img src="src/assets/images/Screenshot resolved expenses page.jpg" alt="Resolved Expenses" width="600" />
+  <img src="./src/assets/images/Screenshot resolved expenses page.jpg" alt="Resolved Expenses" width="600" />
   <br><em>Resolved Expenses - Complete audit trail with approval/rejection history</em>
 </p>
+
+</div>
 
 ## 🏗️ Architecture & Tech Stack
 
