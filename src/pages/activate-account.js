@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   activateAccount,
   login,
+  getCurrentUser,
   clearTempUser,
 } from "../features/user/userSlice";
 import { useSearchParams, useNavigate } from "react-router-dom";
@@ -18,7 +19,7 @@ const initialState = {
 
 const ActivateAccount = () => {
   const [values, setValues] = useState(initialState);
-  const { isLoading, user } = useSelector((state) => state.user);
+  const { isLoading } = useSelector((state) => state.user);
   const [searchParams] = useSearchParams();
 
   const navigate = useNavigate();
@@ -33,20 +34,14 @@ const ActivateAccount = () => {
     } else if (formParam === "activate-account") {
       setValues((prev) => ({ ...prev, isRegistered: true }));
     }
-
-    if (user && !isLoading && !values.isRegistered && formParam === "login") {
-      setTimeout(() => {
-        navigate("/index");
-      }, 1000);
-    }
-  }, [searchParams, user, isLoading, values.isRegistered, navigate]);
+  }, [searchParams]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setValues({ ...values, [name]: value });
   };
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
     const { email, password, code, confirmPassword, isRegistered } = values;
 
@@ -70,7 +65,16 @@ const ActivateAccount = () => {
         toast.error("Please fill in all fields");
         return;
       }
-      dispatch(login({ email, password }));
+
+      dispatch(login({ email, password })).then((result) => {
+        if (result.type === "user/login/fulfilled") {
+          dispatch(getCurrentUser()).then((userResult) => {
+            if (userResult.type === "user/getCurrentUser/fulfilled") {
+              navigate("/index");
+            }
+          });
+        }
+      });
     }
   };
 
