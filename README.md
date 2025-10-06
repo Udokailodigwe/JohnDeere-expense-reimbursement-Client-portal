@@ -8,7 +8,7 @@ A modern, enterprise-grade React application for expense management with robust 
 
 <table>
 <tr>
-<td align="center" width="33%">
+<td align="center" width="33.33%">
 
 ### Manager Dashboard
 
@@ -16,7 +16,7 @@ A modern, enterprise-grade React application for expense management with robust 
 <em>Manager Dashboard - Overview with expense statistics and charts</em>
 
 </td>
-<td align="center" width="33%">
+<td align="center" width="33.33%">
 
 ### Expense Approval Interface
 
@@ -24,7 +24,7 @@ A modern, enterprise-grade React application for expense management with robust 
 <em>Expense Approval Interface - Review and approve/reject employee expenses</em>
 
 </td>
-<td align="center" width="33%">
+<td align="center" width="33.33%">
 
 ### Employee Dashboard
 
