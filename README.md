@@ -6,40 +6,52 @@ A modern, enterprise-grade React application for expense management with robust 
 
 <div align="center">
 
+<table>
+<tr>
+<td align="center" width="33%">
+
 ### Manager Dashboard
 
-<p align="center">
-  <img src="./src/assets/images/Screenshot manager home page.jpg" alt="Manager Dashboard" width="600" />
-  <br><em>Manager Dashboard - Overview with expense statistics and charts</em>
-</p>
+<img src="./src/assets/images/screenshot-manager-home-page.jpg" alt="Manager Dashboard" width="100%" />
+<em>Manager Dashboard - Overview with expense statistics and charts</em>
+
+</td>
+<td align="center" width="33%">
 
 ### Expense Approval Interface
 
-<p align="center">
-  <img src="./src/assets/images/Screenshot manager approval page.jpg" alt="Expense Approvals" width="600" />
-  <br><em>Expense Approval Interface - Review and approve/reject employee expenses</em>
-</p>
+<img src="./src/assets/images/Screenshot manager approval page.jpg" alt="Expense Approvals" width="100%" />
+<em>Expense Approval Interface - Review and approve/reject employee expenses</em>
+
+</td>
+<td align="center" width="33%">
 
 ### Employee Dashboard
 
-<p align="center">
-  <img src="./src/assets/images/screenshot employee.jpg" alt="Employee View" width="600" />
-  <br><em>Employee Dashboard - Submit and track personal expenses</em>
-</p>
+<img src="./src/assets/images/screenshot employee.jpg" alt="Employee View" width="100%" />
+<em>Employee Dashboard - Submit and track personal expenses</em>
+
+</td>
+</tr>
+<tr>
+<td align="center" width="50%">
 
 ### Advanced Filtering & Pagination
 
-<p align="center">
-  <img src="./src/assets/images/Screenshot manager home page with pagination and filter view.jpg" alt="Advanced Filtering" width="600" />
-  <br><em>Advanced Filtering & Pagination - Search and filter expenses with server-side pagination</em>
-</p>
+<img src="./src/assets/images/Screenshot manager home page with pagination and filter view.jpg" alt="Advanced Filtering" width="100%" />
+<em>Advanced Filtering & Pagination - Search and filter expenses with server-side pagination</em>
+
+</td>
+<td align="center" width="50%">
 
 ### Resolved Expenses
 
-<p align="center">
-  <img src="./src/assets/images/Screenshot resolved expenses page.jpg" alt="Resolved Expenses" width="600" />
-  <br><em>Resolved Expenses - Complete audit trail with approval/rejection history</em>
-</p>
+<img src="./src/assets/images/Screenshot resolved expenses page.jpg" alt="Resolved Expenses" width="100%" />
+<em>Resolved Expenses - Complete audit trail with approval/rejection history</em>
+
+</td>
+</tr>
+</table>
 
 </div>
 
