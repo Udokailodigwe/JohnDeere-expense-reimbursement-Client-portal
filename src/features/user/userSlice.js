@@ -5,29 +5,14 @@ import {
   registerManagerThunk,
   activateAccountThunk,
   loginThunk,
+  getCurrentUserThunk,
+  logoutThunk,
 } from "./userThunk";
-import {
-  addUserToLocalStorage,
-  addUserToSessionStorage,
-  removeUserFromLocalStorage,
-  removeUserFromSessionStorage,
-  getUserFromSessionStorage,
-  getUserFromLocalStorage,
-} from "../../utils/localStorage";
 
-const initialState = () => {
-  const persistentUser = getUserFromLocalStorage();
-  const tempUser = getUserFromSessionStorage();
-
-  return {
-    user: persistentUser
-      ? JSON.parse(persistentUser)
-      : tempUser
-      ? JSON.parse(tempUser)
-      : null,
-    isLoading: false,
-    error: null,
-  };
+const initialState = {
+  user: null,
+  isLoading: false,
+  error: null,
 };
 
 export const registerEmployee = createAsyncThunk(
@@ -55,20 +40,25 @@ export const login = createAsyncThunk("user/login", async (user, thunkAPI) => {
   return loginThunk("/auth/login", user, thunkAPI);
 });
 
+export const getCurrentUser = createAsyncThunk(
+  "user/getCurrentUser",
+  async (_, thunkAPI) => {
+    return getCurrentUserThunk("/auth/me", thunkAPI);
+  }
+);
+
+export const logout = createAsyncThunk("user/logout", async (_, thunkAPI) => {
+  return logoutThunk("/auth/logout", thunkAPI);
+});
+
 const userSlice = createSlice({
   name: "user",
   initialState,
 
   reducers: {
-    logout: (state) => {
-      state.user = null;
-      state.error = null;
-      removeUserFromLocalStorage();
-    },
     clearTempUser: (state) => {
       state.user = null;
       state.error = null;
-      removeUserFromSessionStorage();
     },
   },
 
@@ -81,7 +71,6 @@ const userSlice = createSlice({
       .addCase(registerEmployee.fulfilled, (state, { payload }) => {
         state.isLoading = false;
         state.user = payload.user;
-        addUserToSessionStorage(state.user);
         state.error = null;
         toast.success(`Welcome ${state.user.name}! Registration successful.`);
       })
@@ -99,7 +88,6 @@ const userSlice = createSlice({
       .addCase(registerManager.fulfilled, (state, { payload }) => {
         state.isLoading = false;
         state.user = payload.user;
-        addUserToSessionStorage(state.user);
         state.error = null;
         toast.success(`Welcome ${state.user.name}! Registration successful.`);
       })
@@ -133,18 +121,36 @@ const userSlice = createSlice({
       })
       .addCase(login.fulfilled, (state, { payload }) => {
         state.isLoading = false;
-        state.user = payload.user;
-        addUserToLocalStorage(state.user);
         state.error = null;
-        toast.success(`Welcome back ${state.user.name}!`);
+        toast.success("Login successful!");
       })
       .addCase(login.rejected, (state, { payload }) => {
         state.isLoading = false;
         state.error = payload;
         toast.error(payload);
+      })
+      //getCurrentUser
+      .addCase(getCurrentUser.fulfilled, (state, { payload }) => {
+        state.user = payload.user;
+        state.error = null;
+      })
+      .addCase(getCurrentUser.rejected, (state, { payload }) => {
+        state.user = null;
+        state.error = payload;
+      })
+      //logout
+      .addCase(logout.fulfilled, (state) => {
+        state.user = null;
+        state.error = null;
+        toast.success("Logged out successfully");
+      })
+      .addCase(logout.rejected, (state, { payload }) => {
+        state.user = null;
+        state.error = null;
+        toast.error(payload || "Logout failed");
       });
   },
 });
 
-export const { logout, clearTempUser } = userSlice.actions;
+export const { clearTempUser } = userSlice.actions;
 export default userSlice.reducer;
