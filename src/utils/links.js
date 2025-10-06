@@ -57,13 +57,6 @@ const links = [
 
   {
     id: 7,
-    text: "Profile",
-    path: "profile",
-    icon: <MdPerson />,
-    role: ["employee", "manager"],
-  },
-  {
-    id: 8,
     text: "Settings",
     path: "settings",
     icon: <MdSettings />,

@@ -99,13 +99,6 @@ const Navbar = () => {
             {isDropdownOpen && (
               <div className="absolute right-0 mt-2 w-40 sm:w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 py-1 z-50">
                 <a
-                  href="/dashboard/profile"
-                  onClick={() => setIsDropdownOpen(false)}
-                  className="block px-4 py-2 text-xs sm:text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
-                >
-                  Profile
-                </a>
-                <a
                   href="/settings"
                   onClick={() => setIsDropdownOpen(false)}
                   className="block px-4 py-2 text-xs sm:text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
