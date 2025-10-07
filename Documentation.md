@@ -1070,4 +1070,4 @@ jobs:
 
 ---
 
-**© 2025 Company Name. All rights reserved.**
+**© 2025 John Deere. All rights reserved.**

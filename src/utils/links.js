@@ -4,7 +4,6 @@ import {
   MdAddCircle,
   MdCheckCircle,
   MdPendingActions,
-  MdPerson,
   MdSettings,
   MdLogout,
 } from "react-icons/md";
